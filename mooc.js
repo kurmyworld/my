@@ -30,11 +30,14 @@ function goon(){
 	if(window.confirm("继续脚本请按确定，退出请点击取消")){
 		init();
 	}else{
+		console.clear();
+		console.info("您取消了自动提醒");
+		console.info("方向键↑调出历史记录，轻敲回车可重启脚本。");
 		return;
 	}
 }
 function getAlltime(h,m,s){
-	return 1000*(60*(h*60+m)+s);
+	return 1000*(60*(h*60+m)+s)+5*1000;//加5秒延迟，因为启动脚本到点击播放按钮有时差，防止下次加载失败。
 }
 function init(){
 		data = datapart[i];
@@ -60,7 +63,9 @@ function init(){
 		if(h==undefined){h=0;}
 		var time = getAlltime(h,m,s);
 		console.clear();
+		console.info("正在播放："+$("em")[i].innerHTML);
 		console.info("视频总长："+h+"时"+m+"分"+s + "秒");
+		console.info("请在5秒内点击播放按钮，避免下节课加载失败！");
 		window.setTimeout("next();",time);
 		console.info("已设置自动提醒");
 }
