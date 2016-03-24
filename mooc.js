@@ -33,6 +33,9 @@ function goon(){
 		return;
 	}
 }
+function getAlltime(h,m,s){
+	return 1000*(60*(h*60+m)+s);
+}
 function init(){
 		data = datapart[i];
 		if(data!=undefined){
@@ -55,7 +58,7 @@ function init(){
 		var m	 = args[args.length-2];
 		var h	 = args[args.length-3];
 		if(h==undefined){h=0;}
-		var time = 1000*60*(h*60+m)+s*1000;
+		var time = getAlltime(h,m,s);
 		console.clear();
 		console.info("视频总长："+h+"时"+m+"分"+s + "秒");
 		window.setTimeout("next();",time);
