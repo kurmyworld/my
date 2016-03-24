@@ -1,29 +1,32 @@
-
+var patt = new RegExp("[0-9][0-9]:[0-9][0-9]");
+var datapart = document.getElementsByClassName("bottom-part");
+var data;
 var i=0;
+var dd;
+var dl;
+var index;
 function next(){
 	alert("课程已挂完，请点击下一课！");
-	if(i<datapart.length){
-		datapart[++i].parentElement.click(0);
-		console.info("已为您自动加载下一课，请点击播放按钮播放视频");
-		window.setTimeout("goon();",3000);
+	if(++i<datapart.length){
+		datapart[i].parentElement.click(0);
+		goon();
 		return;
 	}
-	var dd = document.getElementsByClassName("active")[0];
-	var dl = dd.parentElement;
-	var index = $(".active").index();
-
+	dd = document.getElementsByClassName("active")[0];
+	dl = dd.parentElement;
+	index = $(".active").index();
 	if(dl.children[index+1]!=undefined){
 		i=0;
 		dl.children[index+1].children[0].click(0);
 	}else{
 		i=0;
-		var dlIndex = $(dl).index();
-		dl.parentElement.children[dlIndex+1].children[1].click(0);
+		index = $(dl).index();
+		dl.parentElement.children[index+1].children[1].children[0].click(0);
 	}
-
-
+	goon();
 }
 function goon(){
+	console.info("已为您自动加载下一课，请点击播放按钮播放视频");
 	if(window.confirm("继续脚本请按确定，退出请点击取消")){
 		init();
 	}else{
@@ -31,14 +34,12 @@ function goon(){
 	}
 }
 function init(){
-		var patt = new RegExp("[0-9][0-9]:[0-9][0-9]");
-		var datapart = document.getElementsByClassName("bottom-part");
-		var data = document.getElementsByClassName("bottom-part")[i];
+		data = datapart[i];
 		if(data!=undefined){
 			data=data.innerHTML;
 		}else{
 			i=0;
-			data = document.getElementsByClassName("bottom-part")[i].innerHTML;
+			data = datapart[i].innerHTML;
 		}
 		if(!patt.test(data)){
 			console.clear();
@@ -54,10 +55,10 @@ function init(){
 		var m	 = args[args.length-2];
 		var h	 = args[args.length-3];
 		if(h==undefined){h=0;}
-		var time = 1000*60*(h*60+m)+s;
+		var time = 1000*60*(h*60+m)+s*1000;
 		console.clear();
 		console.info("视频总长："+h+"时"+m+"分"+s + "秒");
-		window.setTimeout('next();',time);
+		window.setTimeout("next();",time);
 		console.info("已设置自动提醒");
 }
 init();
