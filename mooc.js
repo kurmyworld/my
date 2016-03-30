@@ -67,7 +67,7 @@ function init(){
 	console.info("正在播放："+$("em")[i].innerHTML);
 	console.info("视频总长："+h+"时"+m+"分"+s + "秒");
 	console.info("请在5秒内点击播放按钮，避免下节课加载失败！");
-	window.setTimeout("next();",time);
+	window.setTimeout("next()",time);
 	console.info("已设置自动提醒");
 }
 init();
