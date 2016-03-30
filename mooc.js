@@ -63,6 +63,7 @@ function getAllSecons(){
 	var m	 = args[args.length-2];
 	var h	 = args[args.length-3];
 	if(h==undefined){h=0;}
+	h = parseInt(h);m = parseInt(m);s = parseInt(s);
 	return (h*60*60+m*60+s);
 }
 function start(){
