@@ -1,7 +1,11 @@
 var i=0;
 var datapart;
-function next(){
+function tip(){
 	alert("课程已挂完，请点击下一课！");
+	next();
+}
+function next(){
+	
 	if(++i<datapart.length){
 		datapart[i].parentElement.click(0);
 		goon();
@@ -68,7 +72,9 @@ function init(){
 	console.info("正在播放："+$("em")[i].innerHTML);
 	console.info("视频总长："+seconds+"秒");
 	console.info("请在5秒内点击播放按钮，避免下节课加载失败！");
-	window.setTimeout("next()",time*1000);
-	console.info("已设置自动提醒");
+	if(window.setTimeout("tip()",time*1000)){
+		console.info("已设置自动提醒");
+	}
+	
 }
 init();
