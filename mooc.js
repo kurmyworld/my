@@ -30,7 +30,7 @@ function next(){
 function goon(){
 	console.info("已为您自动加载下一课，请点击播放按钮播放视频");
 	if(window.confirm("继续脚本请按确定，退出请点击取消")){
-		init();
+		start();
 	}else{
 		console.clear();
 		console.info("您取消了自动提醒");
