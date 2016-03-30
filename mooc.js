@@ -65,7 +65,7 @@ function getAllSecons(){
 	if(h==undefined){h=0;}
 	return (h*60*60+m*60+s);
 }
-function init(){
+function start(){
 	var seconds = getAllSecons();
 	if(getAllSecons == 0)return;
 	console.clear();
@@ -75,4 +75,4 @@ function init(){
 	console.info("已设置自动提醒");
 	window.setTimeout("tip()",seconds*1000);
 }
-init();
+start();
