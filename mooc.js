@@ -73,5 +73,6 @@ function init(){
 	console.info("视频总长："+seconds+"秒");
 	console.info("请在5秒内点击播放按钮，避免下节课加载失败！");
 	console.info("已设置自动提醒");
+	window.setTimeout("tip()",seconds*1000);
 }
 init();
