@@ -35,7 +35,7 @@ function goon(){
 	}
 }
 function getAlltime(h,m,s){
-	return 1000*(h*60*10+m*60+s+5);//加5秒延迟，因为启动脚本到点击播放按钮有时差，防止下次加载失败。
+	return 1000*(h*60*60+m*60+s+5);//加5秒延迟，因为启动脚本到点击播放按钮有时差，防止下次加载失败。
 }
 function init(){
 	var patt = new RegExp("[0-9][0-9]:[0-9][0-9]");
