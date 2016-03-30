@@ -63,7 +63,7 @@ function getAllSecons(){
 	var m	 = args[args.length-2];
 	var h	 = args[args.length-3];
 	if(h==undefined){h=0;}
-	return (h*60*60+m*60+s+5);//加5秒延迟，因为启动脚本到点击播放按钮有时差，防止下次加载失败。
+	return (h*60*60+m*60+s);
 }
 function init(){
 	var seconds = getAllSecons();
@@ -72,9 +72,6 @@ function init(){
 	console.info("正在播放："+$("em")[i].innerHTML);
 	console.info("视频总长："+seconds+"秒");
 	console.info("请在5秒内点击播放按钮，避免下节课加载失败！");
-	if(window.setTimeout("tip()",time*1000)){
-		console.info("已设置自动提醒");
-	}
-	
+	console.info("已设置自动提醒");
 }
 init();
