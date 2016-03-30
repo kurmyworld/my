@@ -34,10 +34,7 @@ function goon(){
 		return;
 	}
 }
-function getAlltime(h,m,s){
-	return 1000*(h*60*60+m*60+s+5);//加5秒延迟，因为启动脚本到点击播放按钮有时差，防止下次加载失败。
-}
-function init(){
+function getAllSecons(){
 	var patt = new RegExp("[0-9][0-9]:[0-9][0-9]");
 	datapart = document.getElementsByClassName("bottom-part");
 	var data;
@@ -53,7 +50,7 @@ function init(){
 		console.info("找不到时间信息!");
 		console.info("PPT可以直接在下方输入最后一页页码，轻敲回车即可看完！");
 		console.info("方向键↑调出历史记录，轻敲回车可重启脚本。");
-		return;
+		return 0;
 	}
 	    data = patt.exec(data)
 	   	data = data[0];
@@ -62,12 +59,16 @@ function init(){
 	var m	 = args[args.length-2];
 	var h	 = args[args.length-3];
 	if(h==undefined){h=0;}
-	var time = getAlltime(h,m,s);
+	return (h*60*60+m*60+s+5);//加5秒延迟，因为启动脚本到点击播放按钮有时差，防止下次加载失败。
+}
+function init(){
+	var seconds = getAllSecons();
+	if(getAllSecons == 0)return;
 	console.clear();
 	console.info("正在播放："+$("em")[i].innerHTML);
-	console.info("视频总长："+h+"时"+m+"分"+s + "秒");
+	console.info("视频总长："+seconds+"秒");
 	console.info("请在5秒内点击播放按钮，避免下节课加载失败！");
-	window.setTimeout("next()",time);
+	window.setTimeout("next()",time*1000);
 	console.info("已设置自动提醒");
 }
 init();
