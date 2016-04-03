@@ -64,35 +64,46 @@ void clear(){
 }
 
 int isWin(int who){
-	int keyCountCol,keyCountRow;
-	int i,j;
-//	printf("who:%d",who);
-//	while(getchar()!='a');
-	for(i = 0;i<MAX;i++){
-		keyCountCol = 0;
-		keyCountRow = 0;
+	int kcr,kcc;
+	int iswin = 0;
+	int i,j,tmp;
+	//比较同行同列；
+	kcc=kcr=0;//初始化kcc、kcr
+	for(i = 0;i < MAX;i++){
 		for(j = 0;j<MAX;j++){
-			if(table[i][j] == who){
-				keyCountCol++;
-			}else{
-				keyCountCol = 0;
-			}
-			if(table[j][i] == who){
-				keyCountRow++;
-			}else{
-				keyCountRow = 0;
-			}
-			if(keyCountRow == WINLINE || keyCountCol == WINLINE)return 1;
+			if(table[i][j]==who){kcr++;}else{kcr=0;};
+			if(table[j][i]==who){kcc++;}else{kcc=0;};
+			iswin=(kcc==WINLINE||kcr==WINLINE)?1:0;
+			if(iswin) return iswin;//成功就返回；
 		}
 	}
-	keyCountRow = keyCountCol = 0;
+	//对角线比较
+	kcc=kcr=0;//初始化kcc、kcr
 	for(i = 0;i<MAX;i++){
-		if(table[i][i] == who)keyCountCol++;
-		if(table[i][MAX-i] == who)keyCountRow++;
-		if(keyCountRow == WINLINE || keyCountCol == WINLINE)return 1;
+		for(j = 0;j+i<MAX;j++){
+			if(table[i][j]==who){kcr++;}else{kcr=0;};
+			if(table[j][i]==who){kcc++;}else{kcc=0;};
+			iswin=(kcc==WINLINE||kcr==WINLINE)?1:0;
+			if(iswin) return iswin;//成功就返回；
+		}
 	}
+	//反对角线比较1
+	kcc=kcr=0;//初始化kcc、kcr
+	for(i = MAX-1;i>0;i--){
+		for(j = 0;j<MAX&&i-j>=0;j++){
+			if(table[i][i-j]==who){kcr++;}else{kcr=0;};
+			iswin = (kcr==WINLINE)?1:0;
+			if(iswin)return iswin;
+		}
+	}
+	//反对角线比较1
+	kcc=kcr=0;//初始化kcc、kcr
 	for(i = 0;i<MAX;i++){
-		if(table[i][i]
+		for(tmp=i,j=MAX-1;j>i;j--,tmp++){
+			if(table[tmp][j]==who){kcr++;}else{kcr=0;};
+			iswin = (kcr==WINLINE)?1:0;
+			if(iswin)return iswin;
+		}
 	}
 	return 0;
 }
