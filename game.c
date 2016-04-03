@@ -3,9 +3,12 @@
 #define Null -1
 #define A_PLAYER 0
 #define B_PLAYER 1
-#define MAX 5
-#define WINLINE  3
+#define MAX 3
+//#define WINLINE  2
 int table[MAX][MAX];
+//int table;
+//int MAX;
+int WINLINE;
 void init();
 void refresh();
 void print_who(int i,int j);
@@ -31,9 +34,11 @@ void main(){
 }
 void init(){
 	int i,j;
+	printf("几个子算赢？：");
+	scanf("%d",&WINLINE);
 	for(i = 0;i<MAX;i++){
 		for(j = 0;j<MAX;j++){
-			table[i][j] = -1;
+			table[i][j] = Null;
 		}
 	}
 }
@@ -68,52 +73,82 @@ int isWin(int who){
 	int iswin = 0;
 	int i,j,tmp;
 	//比较同行同列；
-	kcc=kcr=0;//初始化kcc、kcr
+	printf("判定中1.0...\n");
 	for(i = 0;i < MAX;i++){
+		kcc=kcr=0;//初始化and防止跨行计算
 		for(j = 0;j<MAX;j++){
-			if(table[i][j]==who){kcr++;}else{kcr=0;};
-			if(table[j][i]==who){kcc++;}else{kcc=0;};
+			if(table[i][j]==who){kcr++;}else{kcr=0;}
+			if(table[j][i]==who){kcc++;}else{kcc=0;}
 			iswin=(kcc==WINLINE||kcr==WINLINE)?1:0;
-			if(iswin) return iswin;//成功就返回；
+			if(iswin)break;
 		}
+		if(iswin)break;
 	}
-	//对角线比较
-	kcc=kcr=0;//初始化kcc、kcr
+	if(iswin)return iswin;
+	printf("判定中2.0...\n");
+	//正对角线比较
+	kcc=kcr=0;
 	for(i = 0;i<MAX;i++){
+		if(table[i][i]==who)kcc++;else kcc=0;
+		iswin=kcc==WINLINE?1:0;
+		if (iswin) break;
+	}
+	if(iswin) return iswin;
+	printf("判定中2.1...\n");
+	//正对角线右上及左下比较
+	for(i = 0;i<MAX;i++){
+		kcc=kcr=0;
 		for(j = 0;j+i<MAX;j++){
-			if(table[i][j]==who){kcr++;}else{kcr=0;};
-			if(table[j][i]==who){kcc++;}else{kcc=0;};
-			iswin=(kcc==WINLINE||kcr==WINLINE)?1:0;
-			if(iswin) return iswin;//成功就返回；
+			if(table[j][j+i]==who)kcc++;else kcc=0;
+			if(table[j+i][j]==who)kcr++;else kcr=0;
+			iswin=kcc==WINLINE||kcr==WINLINE?1:0;
+			if(iswin)break;
 		}
+		if(iswin)break;
 	}
-	//反对角线比较1
-	kcc=kcr=0;//初始化kcc、kcr
-	for(i = MAX-1;i>0;i--){
-		for(j = 0;j<MAX&&i-j>=0;j++){
-			if(table[i][i-j]==who){kcr++;}else{kcr=0;};
-			iswin = (kcr==WINLINE)?1:0;
-			if(iswin)return iswin;
-		}
-	}
-	//反对角线比较1
-	kcc=kcr=0;//初始化kcc、kcr
+	if(iswin)return iswin;
+	printf("判定中3.0...\n");
+	//反对角线比较
+	kcc=kcr=0;
 	for(i = 0;i<MAX;i++){
-		for(tmp=i,j=MAX-1;j>i;j--,tmp++){
-			if(table[tmp][j]==who){kcr++;}else{kcr=0;};
-			iswin = (kcr==WINLINE)?1:0;
-			if(iswin)return iswin;
-		}
+		if(table[MAX-1-i][i]==who)kcc++;else kcc = 0;
+		iswin=kcc==WINLINE?1:0;
+		if(iswin)break;
 	}
+	if(iswin)return iswin;
+	printf("判定中3.1...\n");
+	//反对角线比较左上部分
+	for(i = MAX-1;i>0;i--){
+		kcc=kcr=0;
+		for(j = 0;j<MAX&&i-j>=0;j++){
+			if(table[j][i-j]==who)kcc++;else kcc=0;
+			iswin=kcc==WINLINE?1:0;
+			if(iswin)break;
+		}
+		if(iswin)break;
+	}
+	if(iswin)return iswin;
+	printf("判定中3.2...\n");
+	//反对角线比较右下部分
+	for(i = 0;i<MAX;i++){
+		kcc=kcr=0;
+		for(tmp=i,j=MAX-1;j>=i;j--,tmp++){
+			if(table[tmp][j]==who)kcc++;else kcc=0;
+			iswin=kcc==WINLINE?1:0;
+			if(iswin)break;
+		}
+		if(iswin)break;
+	}
+	if(iswin)return iswin;
 	return 0;
 }
 
 void setKey(int who){
 	int x,y;
 	if(who == A_PLAYER){
-		printf("A 玩家输入棋坐标（x y）：");
+		printf("A 玩家\"o\"输入棋坐标（x y）：");
 	}else{
-		printf("B 玩家输入棋坐标（x y）：");
+		printf("B 玩家\"*\"输入棋坐标（x y）：");
 	}
 	scanf("%d %d",&x,&y);
 	while(!(x<=MAX) || !(y<=MAX)){
