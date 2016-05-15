@@ -4,7 +4,12 @@ function tip(){
 function patternTime(){
   var html = $(".active")[1].innerHTML;
   var pattern = new RegExp("[\\d+](:\\d\\d){2}");
-  return pattern.exec(html)[0]
+  if(pattern.test(html)){
+    return pattern.exec(html)[0]
+  }else{
+    return "0:00:00";
+  }
+
 }
 
 function patternID(who){
@@ -27,9 +32,9 @@ function setInfo(){
   $("title").html("Using AutoTip by:Chioy");
   console.clear();
   var classname = $(".active")[1].children[0].children[0].children[1].innerHTML;
-  console.info("AutoTip By:Chioy \n\n--------- Start---------\n\n");
-  console.info("Resource Name:" + classname);
-  console.info("Duration:" + patternTime());
+  console.log("AutoTip By:Chioy \n\n--------- Start---------\n\n");
+  console.log("Resource Name:" + classname);
+  console.log("Duration:" + patternTime());
 }
 
 function timeFormat(timeString){
@@ -56,18 +61,18 @@ function hasNext(who,increment){
 }
 
 function click(element){
-  console.info("Check whether to allow loading...");
+  console.log("Check whether to allow loading...");
   if(!canNext()){
-    console.info("Can not load,wait for 20 seconds to continue...");
+    console.log("Can not load,wait for 20 seconds to continue...");
     window.setTimeout(function () {
       click(element);
     }, 20*1000);
   }else{
     element.click(0);
-    console.info("Loading data...");
+    console.log("Loading data...");
     window.setTimeout(function () {
       // console.clear();
-      console.info("AutoTip Has Been Started");
+      console.log("AutoTip Has Been Started");
       start();
     }, 10*1000);
   }
@@ -89,6 +94,12 @@ function getCurrentSeconds(){
 function start(){
   setInfo();
   var seconds = getCurrentSeconds();
+  if(seconds==0){
+    console.info("---------------------------------");
+    console.info("Can not find duration,exit the script");
+    console.info("---------------------------------");
+    return;
+  }
   var nextResource = hasNextResource(1);
   if(nextResource != 0){
     window.setTimeout(function () {
