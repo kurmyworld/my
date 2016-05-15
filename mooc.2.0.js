@@ -13,6 +13,16 @@ function patternID(who){
   return parseInt(pattern.exec(sourceid)[0]);
 }
 
+function canNext(){
+  var attrib = $($(".active")[1]).attr("class").split(" ");
+  for(var a in attrib){
+    if(attrib[a] == "full"){
+      return true;
+    }
+  }
+  return false;
+}
+
 function setInfo(){
   console.clear();
   var classname = $(".active")[1].children[0].children[0].children[1].innerHTML;
@@ -44,13 +54,21 @@ function hasNext(who,increment){
 }
 
 function click(element){
-  element.click(0);
-  console.info("watting for loadding...");
-  window.setTimeout(function () {
-    console.clear();
-    console.info("auto tip started");
-    start();
-  }, 10*1000);
+  console.info("checking can load next...");
+  if(!canNext()){
+    console.info("can't load,wait 20 seconds...");
+    window.setTimeout(function () {
+      click(element);
+    }, 20*1000);
+  }else{
+    element.click(0);
+    console.info("watting for loadding...");
+    window.setTimeout(function () {
+      console.clear();
+      console.info("auto tip started");
+      start();
+    }, 10*1000);
+  }
 }
 
 function hasNextSection(increment){
