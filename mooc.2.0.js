@@ -45,6 +45,7 @@ function hasNext(who,increment){
 
 function click(element){
   element.click(0);
+  console.info("watting for loadding...");
   window.setTimeout(function () {
     console.clear();
     console.info("auto tip started");
