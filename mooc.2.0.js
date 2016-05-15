@@ -24,10 +24,12 @@ function canNext(){
 }
 
 function setInfo(){
+  $("title").html("Using AutoTip by:Chioy");
   console.clear();
   var classname = $(".active")[1].children[0].children[0].children[1].innerHTML;
-  console.info("ClassName:" + classname);
-  console.info("time:" + patternTime());
+  console.info("AutoTip By:Chioy \n\n--------- Start---------\n\n");
+  console.info("Resource Name:" + classname);
+  console.info("Duration:" + patternTime());
 }
 
 function timeFormat(timeString){
@@ -54,18 +56,18 @@ function hasNext(who,increment){
 }
 
 function click(element){
-  console.info("checking can load next...");
+  console.info("Check whether to allow loading...");
   if(!canNext()){
-    console.info("can't load,wait 20 seconds...");
+    console.info("Can not load,wait for 20 seconds to continue...");
     window.setTimeout(function () {
       click(element);
     }, 20*1000);
   }else{
     element.click(0);
-    console.info("watting for loadding...");
+    console.info("Loading data...");
     window.setTimeout(function () {
-      console.clear();
-      console.info("auto tip started");
+      // console.clear();
+      console.info("AutoTip Has Been Started");
       start();
     }, 10*1000);
   }
