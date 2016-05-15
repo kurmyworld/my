@@ -1,5 +1,5 @@
 function tip(){
-  alert("tip")
+  alert("请点击播放按钮播放课程")
 }
 function patternTime(){
   var html = $(".active")[1].innerHTML;
@@ -9,7 +9,6 @@ function patternTime(){
   }else{
     return "0:00:00";
   }
-
 }
 
 function patternID(who){
@@ -102,6 +101,7 @@ function start(){
   }
   var nextResource = hasNextResource(1);
   if(nextResource != 0){
+    tip();
     window.setTimeout(function () {
       click(nextResource);
     }, seconds*1000);
@@ -109,6 +109,7 @@ function start(){
     for(var i = 1;i<3;i++){
       nextSection = hasNextSection(i);
       if(nextSection != 0){
+        tip();
         window.setTimeout(function () {
           click(nextSection);
         }, seconds*1000);
