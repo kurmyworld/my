@@ -1,5 +1,5 @@
 function tip(){
-  alert("请点击播放按钮播放课程")
+  alert("请点击播放按钮播放课程");
 }
 function patternTime(){
   var html = $(".active")[1].innerHTML;
@@ -11,24 +11,13 @@ function patternTime(){
   }
 }
 
-
-function canNext(){
-  var attrib = $($(".active")[1]).attr("class").split(" ");
-  for(var a in attrib){
-    if(attrib[a] == "full"){
-      return true;
-    }
-  }
-  return false;
-}
-
 function setInfo(){
-  $("title").html("AutoTip by:Chioy");
+  $("title").innerHTML="AutoTip By:Chioy";
   console.clear();
   var classname = $($(".active")[1]).find("em")[0].innerHTML;
-  console.log("AutoTip By:Chioy \n\n--------- Start---------\n\n");
+  console.log("AutoTip Start");
   console.log("Resource Name:" + classname);
-  console.log("Duration:" + patternTime());
+  console.log("Duration:" + patternTime() + "\nSeconds:" + getCurrentSeconds()+"(s)");
 }
 
 function timeFormat(timeString){
@@ -40,9 +29,24 @@ function timeFormat(timeString){
   return (s+m*60+h*60*60);
 }
 
+function canNext(){
+  if($($(".active.video.full"))[0] == undefined){
+    return false;
+  }else{
+    return true;
+  }
+}
+
 function hasNext(who){
-  var i = (who=="section")?0:1;
-  var next = $($(".active")[i]).next()[0];
+  var next;
+  switch (who) {
+    case "section":
+      next = $($("dd.active")[0]).next()[0];
+      break;
+    case "resource":
+      next = $($(".video.active")[0]).next()[0];
+    default:
+  }
   if(next == undefined){
     return 0;
   }else{
@@ -51,7 +55,21 @@ function hasNext(who){
 }
 
 function toNextChapter(){
-  return $($($(".active")[0]).parent().next()[0]).find("a")[0];
+  var nextChapter = $($($(".active")[0]).parent().next()[0]).find("a")[0];
+  return nextChapter==undefined?0:nextChapter;
+}
+
+
+function hasNextSection(){
+  return hasNext("section");
+}
+
+function hasNextResource(){
+  return hasNext("resource");
+}
+
+function getCurrentSeconds(){
+  return timeFormat(patternTime());
 }
 
 function click(element){
@@ -70,22 +88,12 @@ function click(element){
   }
 }
 
-function hasNextSection(){
-  return hasNext("section");
-}
-
-function hasNextResource(){
-  return hasNext("resource");
-}
-
-function getCurrentSeconds(){
-  return timeFormat(patternTime());
-}
-
-
 function start(){
-  setInfo();
   var seconds = getCurrentSeconds();
+  if(canNext()){
+    seconds = 1;
+    console.info("This has learned");
+  }
   if(seconds==0){
     console.info("---------------------------------");
     console.info("Can not find duration,exit the script");
@@ -95,20 +103,27 @@ function start(){
   nextResource = hasNextResource();
   nextSection = hasNextSection();
   nextChapter = toNextChapter();
+  if(nextChapter == 0){
+    console.clear();
+    console.info("------Class Over-----------");
+    return ;
+  }
   if(nextResource != 0){
     tip();
     window.setTimeout(function () {
       click(nextResource);
     }, seconds*1000);
   }else if(nextSection != 0){
-      tip();
-      window.setTimeout(function () {
-        click(nextSection);
-      }, seconds*1000);
-  }else {
+    tip();
+    window.setTimeout(function () {
+      click(nextSection);
+    }, seconds*1000);
+  }else if(nextChapter != 0){
     tip();
     window.setTimeout(function () {
       click(nextChapter);
     }, seconds*1000);
   }
+
+  setInfo();
 }
