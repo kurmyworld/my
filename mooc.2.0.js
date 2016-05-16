@@ -11,11 +11,6 @@ function patternTime(){
   }
 }
 
-function patternID(who){
-  var sourceid = $(".active")[who].id;
-  var pattern = new RegExp("\\d{2,}\\b");
-  return parseInt(pattern.exec(sourceid)[0]);
-}
 
 function canNext(){
   var attrib = $($(".active")[1]).attr("class").split(" ");
@@ -28,9 +23,9 @@ function canNext(){
 }
 
 function setInfo(){
-  $("title").html("Using AutoTip by:Chioy");
+  $("title").html("AutoTip by:Chioy");
   console.clear();
-  var classname = $(".active")[1].children[0].children[0].children[1].innerHTML;
+  var classname = $($(".active")[1]).find("em")[0].innerHTML;
   console.log("AutoTip By:Chioy \n\n--------- Start---------\n\n");
   console.log("Resource Name:" + classname);
   console.log("Duration:" + patternTime());
@@ -45,18 +40,18 @@ function timeFormat(timeString){
   return (s+m*60+h*60*60);
 }
 
-function hasNext(who,increment){
-  var add = parseInt(increment);
-  var i = 1;
-  var prefix = "#resource-";
-  if(who=="section")i=0,prefix="#section-";
-  var id = patternID(i)+add;
-  var next = $(prefix+id)[0];
+function hasNext(who){
+  var i = (who=="section")?0:1;
+  var next = $($(".active")[i]).next()[0];
   if(next == undefined){
     return 0;
   }else{
-    return next.children[0];
+    return $(next).find("a")[0];
   }
+}
+
+function toNextChapter(){
+  return $($($(".active")[0]).parent().next()[0]).find("a")[0];
 }
 
 function click(element){
@@ -70,19 +65,17 @@ function click(element){
     element.click(0);
     console.log("Loading data...");
     window.setTimeout(function () {
-      // console.clear();
-      console.log("AutoTip Has Been Started");
       start();
     }, 10*1000);
   }
 }
 
-function hasNextSection(increment){
-  return hasNext("section",increment);
+function hasNextSection(){
+  return hasNext("section");
 }
 
-function hasNextResource(increment){
-  return hasNext("resource",increment);
+function hasNextResource(){
+  return hasNext("resource");
 }
 
 function getCurrentSeconds(){
@@ -99,22 +92,23 @@ function start(){
     console.info("---------------------------------");
     return;
   }
-  var nextResource = hasNextResource(1);
+  nextResource = hasNextResource();
+  nextSection = hasNextSection();
+  nextChapter = toNextChapter();
   if(nextResource != 0){
     tip();
     window.setTimeout(function () {
       click(nextResource);
     }, seconds*1000);
+  }else if(nextSection != 0){
+      tip();
+      window.setTimeout(function () {
+        click(nextSection);
+      }, seconds*1000);
   }else {
-    for(var i = 1;i<3;i++){
-      nextSection = hasNextSection(i);
-      if(nextSection != 0){
-        tip();
-        window.setTimeout(function () {
-          click(nextSection);
-        }, seconds*1000);
-        break;
-      }
-    }
+    tip();
+    window.setTimeout(function () {
+      click(nextChapter);
+    }, seconds*1000);
   }
 }
