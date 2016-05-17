@@ -103,6 +103,8 @@ function start(){
   nextResource = hasNextResource();
   nextSection = hasNextSection();
   nextChapter = toNextChapter();
+  if(nextResource==0)
+  if(nextSection==0)
   if(nextChapter == 0){
     console.clear();
     console.info("------Class Over-----------");
@@ -113,17 +115,19 @@ function start(){
     window.setTimeout(function () {
       click(nextResource);
     }, seconds*1000);
+
   }else if(nextSection != 0){
     tip();
     window.setTimeout(function () {
       click(nextSection);
     }, seconds*1000);
+
   }else if(nextChapter != 0){
     tip();
     window.setTimeout(function () {
       click(nextChapter);
     }, seconds*1000);
-  }
 
+  }
   setInfo();
 }
