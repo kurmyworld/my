@@ -98,6 +98,7 @@ function start(){
     console.info("---------------------------------");
     console.info("Can not find duration,exit the script");
     console.info("---------------------------------");
+    alert("非视频，请看完文档重新再执行脚本");
     return;
   }
   nextResource = hasNextResource();
