@@ -1,14 +1,24 @@
 function play(){
-  $("a.ln-confirm-btn.j-resume1")[0].click(0);
+  try {
+    $("a.ln-confirm-btn.j-resume1")[0].click(0);
+  }catch(e){
+
+  }
 }
+
 function patternTime(){
-  var html = $(".active")[1].innerHTML;
-  var pattern = new RegExp("[\\d+](:\\d\\d){2}");
-  if(pattern.test(html)){
-    return pattern.exec(html)[0]
-  }else{
+  try{
+    var html = $(".active")[1].innerHTML;
+    var pattern = new RegExp("[\\d+](:\\d\\d){2}");
+    if(pattern.test(html)){
+      return pattern.exec(html)[0]
+    }else{
+      return "0:00:00";
+    }
+  }catch(e){
     return "0:00:00";
   }
+
 }
 
 function setInfo(){
@@ -18,6 +28,27 @@ function setInfo(){
   console.log("AutoTip Start");
   console.log("Resource Name:" + classname);
   console.log("Duration:" + patternTime() + "\nSeconds:" + getCurrentSeconds()+"(s)");
+}
+
+function getPageSize(){
+  return parseInt($("span.pageindex").find("span")[1].innerHTML);
+}
+
+function getNextPageBtn(){
+  var a = $("a");
+  for(i in a){
+    if(a[i].innerHTML=="下"){
+      return a[i];
+    }
+  }
+}
+
+function doReadDoc(){
+  var pagesize = getPageSize();
+  var nextBtn = getNextPageBtn();
+  for(var i = 0;i<pagesize;i++){
+    nextBtn.click(0);
+  }
 }
 
 function timeFormat(timeString){
@@ -30,10 +61,14 @@ function timeFormat(timeString){
 }
 
 function canNext(){
-  if($($(".active.video.full"))[0] == undefined){
-    return false;
-  }else{
-    return true;
+  try {
+    if($($(".active.full"))[0] == undefined){
+      return false;
+    }else{
+      return true;
+    }
+  } catch (e) {
+      return false;
   }
 }
 
@@ -84,9 +119,12 @@ function click(element){
     console.log("Loading data...");
     window.setTimeout(function () {
       start();
+      play();
     }, 10*1000);
   }
 }
+
+
 
 function start(){
   var seconds = getCurrentSeconds();
@@ -96,10 +134,10 @@ function start(){
   }
   if(seconds==0){
     console.info("---------------------------------");
-    console.info("Can not find duration,exit the script");
+    console.info("Can not find duration,excute doReadDoc()");
     console.info("---------------------------------");
-    alert("非视频，请看完文档重新再执行脚本");
-    return;
+    doReadDoc();
+    seconds = 2;
   }
   nextResource = hasNextResource();
   nextSection = hasNextSection();
@@ -112,19 +150,19 @@ function start(){
     return ;
   }
   if(nextResource != 0){
-    play();
+
     window.setTimeout(function () {
       click(nextResource);
     }, seconds*1000);
 
   }else if(nextSection != 0){
-    play();
+
     window.setTimeout(function () {
       click(nextSection);
     }, seconds*1000);
 
   }else if(nextChapter != 0){
-    play();
+
     window.setTimeout(function () {
       click(nextChapter);
     }, seconds*1000);
