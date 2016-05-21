@@ -46,9 +46,7 @@ function getNextPageBtn(){
 function doReadDoc(){
   var pagesize = getPageSize();
   var nextBtn = getNextPageBtn();
-  for(var i = 0;i<pagesize;i++){
-    nextBtn.click(0);
-  }
+  $(".minimap-item-bg")[pagesize-1].click(0)
 }
 
 function timeFormat(timeString){
@@ -74,18 +72,22 @@ function canNext(){
 
 function hasNext(who){
   var next;
-  switch (who) {
-    case "section":
-      next = $($("dd.active")[0]).next()[0];
-      break;
-    case "resource":
-      next = $($(".video.active")[0]).next()[0];
-    default:
-  }
-  if(next == undefined){
+  try {
+    switch (who) {
+      case "section":
+        next = $($("dd.active")[0]).next()[0];
+        break;
+      case "resource":
+        next = $($(".full.active")[0]).next()[0];
+      default:
+    }
+    if(next == undefined){
+      return 0;
+    }else{
+      return $(next).find("a")[0];
+    }
+  } catch (e) {
     return 0;
-  }else{
-    return $(next).find("a")[0];
   }
 }
 
