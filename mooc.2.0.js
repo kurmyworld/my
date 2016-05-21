@@ -1,5 +1,5 @@
-function tip(){
-  alert("请点击播放按钮播放课程");
+function play(){
+  $("a.ln-confirm-btn.j-resume1")[0].click(0);
 }
 function patternTime(){
   var html = $(".active")[1].innerHTML;
@@ -112,19 +112,19 @@ function start(){
     return ;
   }
   if(nextResource != 0){
-    tip();
+    play();
     window.setTimeout(function () {
       click(nextResource);
     }, seconds*1000);
 
   }else if(nextSection != 0){
-    tip();
+    play();
     window.setTimeout(function () {
       click(nextSection);
     }, seconds*1000);
 
   }else if(nextChapter != 0){
-    tip();
+    play();
     window.setTimeout(function () {
       click(nextChapter);
     }, seconds*1000);
