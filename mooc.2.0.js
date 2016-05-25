@@ -113,6 +113,9 @@ function click(element){
   console.log("Check whether to allow loading...");
   if(!canNext()){
     console.log("Can not load,wait for 20 seconds to continue...");
+    try {
+      play();paly();play();//有时候可能是视频一直加载失败，主动再点播放，多加载几次。
+    } catch (e) {}
     window.setTimeout(function () {
       click(element);
     }, 20*1000);
