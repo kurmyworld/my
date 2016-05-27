@@ -151,24 +151,21 @@ function start(){
     console.info("------Class Over-----------");
     return ;
   }
+  play();
   if(nextResource != 0){
-    play();
     window.setTimeout(function () {
       click(nextResource);
     }, seconds*1000);
 
   }else if(nextSection != 0){
-    play();
     window.setTimeout(function () {
       click(nextSection);
     }, seconds*1000);
 
   }else if(nextChapter != 0){
-    play();
     window.setTimeout(function () {
       click(nextChapter);
     }, seconds*1000);
-
   }
   setInfo();
 }
