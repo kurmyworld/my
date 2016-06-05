@@ -73,7 +73,7 @@ function canNext(){
 }
 
 function hasNext(who){
-  var next = 0;
+  var next;
   try {
     switch (who) {
       case "section":
@@ -85,7 +85,7 @@ function hasNext(who){
       default:
         break;
     }
-    if(next == 0){
+    if(next == undefined){
       return 0;
     }else{
       return $(next).find("a")[0];
