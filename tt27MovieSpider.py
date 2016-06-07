@@ -1,6 +1,13 @@
-# coding=utf-8
+# coding=UTF-8
 
-import requests,re
+import re,os
+try:
+    import requests
+except:
+    print('正在下载requests模块..')
+    os.system('pip install requests')
+    print('模块已下载,正在继续...')
+    import requests
 
 def mk_keyword(keyword=0):  
     if(keyword==0):
