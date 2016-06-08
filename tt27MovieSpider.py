@@ -4,26 +4,29 @@ import re,os
 try:
     import requests
 except:
-    print('正在下载requests模块..')
+    print('正在下载requests模块')
     os.system('pip install requests')
     print('模块已下载,正在继续...')
     import requests
 
 def mk_keyword(keyword=0):  
     if(keyword==0):
-        keyword=input("请输入关键字，演员名字或电影名称:\n>")
-    s = '正在查找跟【keyword】有关的电影/电视剧'
+        keyword=str(input("请输入关键字，演员名字或电影名称:\n>"))
+        while(len(keyword.replace(' ',''))==0):
+            keyword=str(input("请输入关键字，演员名字或电影名称:\n>"))
+    s = '正在查找跟【keyword】有关的电影/电视剧，请稍候...'
     print(s.replace('keyword',keyword))
     keyword=keyword.encode('gb2312')
     return {'keyword':keyword}
 
-def getHtml(host,path,encode='UTF-8',data=0):  
+def getHtml(host,path,encode='UTF-8',data=0):
+    url=host+path
     if(data==0):
-        response=requests.get(host+path)
+        response=requests.get(url)
         response.encoding=encode
         return response.text
     else:
-        response=requests.post(host+path,data)
+        response=requests.post(url,data)
         response.encoding=encode
         return response.text
 
@@ -50,12 +53,19 @@ def getPlayList(movieList):
     return playList
 
 
-def matchPlayPath(html):  
+def matchPlayPath(html):
+    result = []
     # 匹配详情页面中的 play_1_1.html
-    pattern = 'play_\S+.html'
-    pattern = re.compile(pattern)
-    result=re.findall(pattern,html)
-    return result;
+    for i in range(1,4):
+        pattern = 'play_i_\d+.html'
+        pattern = pattern.replace('i',str(i))
+        pattern = re.compile(pattern)
+        tmp = re.findall(pattern,html)
+        if(len(tmp)!=0):
+            result.append(tmp)
+        else:
+            break
+    return result
 
 def matchThunder(html):
 
@@ -67,31 +77,30 @@ def matchThunder(html):
 
     title = '<title>\S+'
     title = re.compile(title)
-
     title = re.findall(title,html)[0].replace('<title>','')
-    
-    
 
     result = re.findall(thunder,html)
     if (len(result)!=0):
-        s = '已找到【title】的迅雷链接'
-        print(s.replace('title',title))
         return {'title':title,'link':result[0]}
     result = re.findall(magnet,html)
     if (len(result)!=0):
-        s = '已找到【title】的磁力链接'
-        print(s.replace('title',title))
         return {'title':title,'link':result[0]}
     return {}
 
 def getThunderList(host,movieList,playList):  
     result = []
+    total = 0
+    current = 0
+    total += len(playList[0][0])
     for i in range(0,len(movieList)):
         for j in range(0,len(playList[i])):
-            html = getHtml(host,movieList[i]+playList[i][j],'gb2312')
-            m = matchThunder(html)
-            if(len(m)!=0):
-                result.append(m)
+            for k in range(0,len(playList[i][j])):
+                html = getHtml(host,movieList[i]+playList[i][j][k],'gb2312')
+                m = matchThunder(html)
+                if(len(m)!=0):             
+                    result.append(m)
+                else:
+                    break
     return result
 
 def getMoviesTitle(html):  
@@ -127,37 +136,39 @@ def printThunderList(thunderList):
 
 
 def printTitles(titles):  
-    if(len(titles)==0):
-        print('抱歉没有找到相关电影/电视剧资讯 QAQ')
-        return
     print('为您找到以下相关电影：')
     for i in range(0,len(titles)):
         print('>>'+str(i)+'. '+titles[i])
     print('===========================\n')
 
-def start(html):  
-    movieList = getMovieList(html)
-    playList = getPlayList(movieList)
-    thunderList = getThunderList(host,movieList,playList)
-    printThunderList(thunderList)
-
-if __name__ == '__main__':  
-    host = 'http://www.tt27.tv/'
-    # path = 'dz/36621/'
-    path = 'search.asp'
+def start():
     keyword = mk_keyword();
     html = initSearch(keyword)
     titles = getMoviesTitle(html)
-    printTitles(titles)
-    if(len(titles)!=0):        
+    movieList = getMovieList(html)
+    if(len(titles)!=0):
+        printTitles(titles)
         try:
             case = int(input('请输入电影序号:\n>'))
         except:
             case = 0
-        keyword = titles[case]
-        keyword = mk_keyword(keyword)
-        html = initSearch(keyword);
-        titles = getMoviesTitle(html)
-        printTitles(titles)
-        start(html)
+    else:
+        print('找不到相关电影/电视剧')
+        return
+    s = '正在查找【title】的资源，请稍候...'
+    print(s.replace('title',titles[case]))
+    movieList=[movieList[case]]
+    playList = getPlayList(movieList)
+    thunderList = getThunderList(host,movieList,playList)
+    printThunderList(thunderList)
+
+if __name__ == '__main__':
+    host = 'http://www.tt27.tv/'
+    path = 'search.asp'
+    start()
+    try:
+        while (int(input('1.继续使用\n其他任意字符退出\n>'))==1):
+            start()
+    except:
+        pass
     input('感谢使用，回车键退出')
