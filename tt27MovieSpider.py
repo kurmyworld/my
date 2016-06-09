@@ -9,7 +9,7 @@ except:
     print('模块已下载,正在继续...')
     import requests
 
-def mk_keyword(keyword=0):  
+def mk_keyword(keyword=0):
     if(keyword==0):
         keyword=str(input("请输入关键字，演员名字或电影名称:\n>"))
         while(len(keyword.replace(' ',''))==0):
@@ -19,16 +19,20 @@ def mk_keyword(keyword=0):
     keyword=keyword.encode('gb2312')
     return {'keyword':keyword}
 
-def getHtml(host,path,encode='UTF-8',data=0):
-    url=host+path
-    if(data==0):
-        response=requests.get(url)
-        response.encoding=encode
-        return response.text
-    else:
-        response=requests.post(url,data)
-        response.encoding=encode
-        return response.text
+def getHtml(url,data=0):
+    encode='gb2312'
+    try:
+        if(data==0):
+            response=requests.get(url)
+            response.encoding=encode
+            html = response.text
+        else:
+            response=requests.post(url,data)
+            response.encoding=encode
+            html = response.text
+    except:
+        input('getHtml Exception')
+    return html
 
 def getPageSize(html):  
     reg = '\d+页</span>'
@@ -48,7 +52,8 @@ def getMovieList(searchResultHTML):
 def getPlayList(movieList):  
     playList = []
     for i in range(0,len(movieList)):
-        html = getHtml(host,movieList[i],'gb2312')
+        url = host+movieList[i]
+        html = getHtml(url)
         playList.append(matchPlayPath(html))
     return playList
 
@@ -89,13 +94,11 @@ def matchThunder(html):
 
 def getThunderList(host,movieList,playList):  
     result = []
-    total = 0
-    current = 0
-    total += len(playList[0][0])
     for i in range(0,len(movieList)):
         for j in range(0,len(playList[i])):
             for k in range(0,len(playList[i][j])):
-                html = getHtml(host,movieList[i]+playList[i][j][k],'gb2312')
+                url = host+movieList[i]+playList[i][j][k]
+                html = getHtml(url)
                 m = matchThunder(html)
                 if(len(m)!=0):             
                     result.append(m)
@@ -103,25 +106,30 @@ def getThunderList(host,movieList,playList):
                     break
     return result
 
-def getMoviesTitle(html):  
-    pattern = '>\S{0,}</a></h3>'
+def getMoviesTitle(html):
+    pattern = 'blank">.*</a></h3>'
     reg = re.compile(pattern)
     result = re.findall(reg,html)
     for i in range(0,len(result)):
-        result[i] = result[i].replace('>','')
-        result[i] = result[i].replace('</a</h3','')
+        result[i] = result[i].replace('blank">','')
+        result[i] = result[i].replace('</a></h3>','')
         result[i] = result[i].replace('</font','')
     return result
 
-def initSearch(keyword):  
-    html = getHtml(host,path,'gb2312',keyword)
+def initSearch(keyword):
+    url = host+path
+    html = getHtml(url,keyword)
+    body='<div class="listBox">[.\S\W\w]*<div class="mainRight">'
+    body=re.compile(body)
+    html=re.findall(body,html)[0]
     size = getPageSize(html)
     if(size == 1):
         return html
     else:
         for i in range(2,size+1):
+            print('查找'+str(i)+'/'+str(size)+'页')
             keyword['page']=i
-            html = html + getHtml(host,path,'gb2312',keyword)
+            html = html + re.findall(body,getHtml(url,keyword))[0]
     return html
 
 def printThunderList(thunderList):  
@@ -135,11 +143,14 @@ def printThunderList(thunderList):
     print('\n==============【资源列表】===================\n')
 
 
-def printTitles(titles):  
-    print('为您找到以下相关电影：')
-    for i in range(0,len(titles)):
-        print('>>'+str(i)+'. '+titles[i])
-    print('===========================\n')
+def printTitles(titles):
+    try:
+        print('为您找到以下相关电影：')
+        for i in range(0,len(titles)):
+            print('>>'+str(i)+'. '+titles[i])
+        print('===========================\n')
+    except:
+        print('printTitles Exception')
 
 def start():
     keyword = mk_keyword();
@@ -167,10 +178,18 @@ def start():
 if __name__ == '__main__':
     host = 'http://www.tt27.tv/'
     path = 'search.asp'
-    start()
     try:
-        while (int(input('1.继续使用\n其他任意字符退出\n>'))==1):
-            start()
+        start()
+    except:
+        print('遇到了一个错误，换个关键字搜吧~')
+        pass
+    try:
+        while (int(input('1.继续使用\n直接回车退出\n>'))==1):
+            try:
+                start()
+            except:
+                print('遇到了一个错误，换个关键字搜吧~')
+                pass
     except:
         pass
     input('感谢使用，回车键退出')
