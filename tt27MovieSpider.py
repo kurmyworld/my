@@ -147,6 +147,7 @@ def start():
     titles = getMoviesTitle(html)
     movieList = getMovieList(html)
     if(len(titles)!=0):
+        titles.append('以上所有')
         printTitles(titles)
         try:
             case = int(input('请输入电影序号:\n>'))
@@ -157,7 +158,8 @@ def start():
         return
     s = '正在查找【title】的资源，请稍候...'
     print(s.replace('title',titles[case]))
-    movieList=[movieList[case]]
+    if(case < len(movieList)):
+        movieList=[movieList[case]]
     playList = getPlayList(movieList)
     thunderList = getThunderList(host,movieList,playList)
     printThunderList(thunderList)
